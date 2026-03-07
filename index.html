@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Silly Caption - AI-Powered Image & Video Captioning Tool</title>
-    <meta name="description" content="Generate detailed captions for images and videos using advanced AI models. Professional captioning tool with support for multiple AI providers and custom prompts. Perfect for content creators and developers.">
-    <meta name="keywords" content="AI captioning, LoRA training, LoRA caption, captioner, auto caption, image captioning, video captioning, AI image description, AI video description, caption generator, OpenRouter, AI models, content creation, image analysis">
+    <title>LoRA Caption Generator for Image Datasets | Silly Caption</title>
+    <meta name="description" content="Generate high-quality LoRA training captions for image datasets and video frames using AI. Create consistent, detailed captions for Stable Diffusion and Flux LoRA training with custom prompts and batch processing.">
+    <meta name="keywords" content="LoRA caption generator, LoRA training captions, image dataset captioning, Stable Diffusion LoRA captions, Flux LoRA captions, auto caption for LoRA, AI image captioning for training, video frame captioning, dataset caption tool">
     <meta name="author" content="obsxrver">
     <meta name="robots" content="index, follow">
     <meta name="language" content="English">
@@ -14,16 +14,16 @@
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://obsxrver.com/SillyCaption/">
-    <meta property="og:title" content="Silly Caption - AI-Powered Image & Video Captioning Tool">
-    <meta property="og:description" content="Generate detailed captions for images and videos using advanced AI models. Professional captioning tool with support for multiple AI providers and custom prompts.">
+    <meta property="og:title" content="LoRA Caption Generator for Image Datasets | Silly Caption">
+    <meta property="og:description" content="Generate high-quality LoRA training captions for image datasets and video frames using AI. Create consistent captions for Stable Diffusion and Flux LoRA training.">
     <meta property="og:image" content="https://obsxrver.com/SillyCaption/static/pfp_xs.webp">
     <meta property="og:site_name" content="Silly Caption">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://obsxrver.com/SillyCaption/">
-    <meta property="twitter:title" content="Silly Caption - AI-Powered Image & Video Captioning Tool">
-    <meta property="twitter:description" content="Generate detailed captions for images and videos using advanced AI models. Professional captioning tool with support for multiple AI providers and custom prompts.">
+    <meta property="twitter:title" content="LoRA Caption Generator for Image Datasets | Silly Caption">
+    <meta property="twitter:description" content="Generate high-quality LoRA training captions for image datasets and video frames using AI. Create consistent captions for Stable Diffusion and Flux LoRA training.">
     <meta property="twitter:image" content="https://obsxrver.com/SillyCaption/static/pfp_xs.webp">
 
     <!-- Canonical URL -->
@@ -46,8 +46,8 @@
     {
       "@context": "https://schema.org",
       "@type": "WebApplication",
-      "name": "Silly Caption",
-      "description": "AI-powered image and video captioning tool using advanced language models",
+      "name": "Silly Caption LoRA Caption Generator",
+      "description": "LoRA caption generator for image datasets and video frames using AI models for Stable Diffusion and Flux training",
       "url": "https://obsxrver.com/SillyCaption/",
       "applicationCategory": "MultimediaApplication",
       "operatingSystem": "Web Browser",
@@ -98,7 +98,7 @@
     <header>
         <div class="header-left">
             <h1>Silly Caption</h1>
-            <div class="subtitle">Serious Edition</div>
+            <div class="subtitle">LoRA Caption Generator</div>
         </div>
         <a href="https://obsxrver.com" target="_blank" rel="noreferrer noopener" class="profile-link">
             <img src="static/pfp_xs.webp" alt="Obsxrver Profile Picture">
@@ -226,6 +226,16 @@
                         <div>
                             <label for="framesPerVideo">Frames per Video</label>
                             <input type="number" id="framesPerVideo" min="1" max="15" value="8">
+                        </div>
+                        <div>
+                            <label for="temperature">Temperature</label>
+                            <input type="number" id="temperature" min="0" max="2" step="0.05" value="0.7">
+                        </div>
+                    </div>
+                    <div class="field grid-3">
+                        <div>
+                            <label for="topP">Top P</label>
+                            <input type="number" id="topP" min="0" max="1" step="0.05" value="1">
                         </div>
                     </div>
                     <div class="field">

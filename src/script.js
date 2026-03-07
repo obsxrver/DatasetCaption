@@ -45,6 +45,8 @@
     framesPerVideo: el('framesPerVideo'),
     retryLimit: el('retryLimit'),
     downscaleMp: el('downscaleMp'),
+    temperature: el('temperature'),
+    topP: el('topP'),
     btnCaption: el('btnCaption'),
     btnCaptionUncaptioned: el('btnCaptionUncaptioned'),
     btnCancel: el('btnCancel'),
@@ -925,6 +927,8 @@ EXAMPLES:
     const maxConcurrency = parseInt(ui.concurrency.value, 20);
     const retryLimit = parseInt(ui.retryLimit.value, 5);
     const targetMp = parseFloat(ui.downscaleMp.value);
+    const temperature = clamp(parseFloat(ui.temperature?.value), 0, 2);
+    const topP = clamp(parseFloat(ui.topP?.value), 0, 1);
 
     setRunning(true);
     ui.files.classList.add('processing');
@@ -957,6 +961,8 @@ EXAMPLES:
           retryLimit,
           targetMp,
           framesPerVideo,
+          temperature,
+          topP,
         });
         setCardCaption(card, caption);
         resultsStore.set(item.name, { caption, error: null });
@@ -1594,6 +1600,8 @@ EXAMPLES:
       const retryLimit = clamp(parseInt(ui.retryLimit.value, 10) || 0, 0, 5);
       const targetMp = clamp(parseFloat(ui.downscaleMp.value) || 1, 0.2, 5);
       const framesPerVideo = parseInt(ui.framesPerVideo.value, 10);
+      const temperature = clamp(parseFloat(ui.temperature?.value), 0, 2);
+      const topP = clamp(parseFloat(ui.topP?.value), 0, 1);
 
       card._btnReroll.disabled = true;
       const caption = await captionItem({
@@ -1605,6 +1613,8 @@ EXAMPLES:
         retryLimit,
         targetMp,
         framesPerVideo,
+        temperature,
+        topP,
       });
       setCardCaption(card, caption);
       resultsStore.set(item.name, { caption, error: null });
@@ -1716,7 +1726,7 @@ EXAMPLES:
     await Promise.allSettled(promises);
   }
 
-  async function captionItem({ apiKey, model, systemPrompt, item, signal, retryLimit, targetMp, framesPerVideo }) {
+  async function captionItem({ apiKey, model, systemPrompt, item, signal, retryLimit, targetMp, framesPerVideo, temperature, topP }) {
     let processedDataUrls;
     let videoBase64 = null;
 
@@ -1762,6 +1772,8 @@ EXAMPLES:
           systemPrompt,
           item: { ...item, dataUrls: processedDataUrls, videoBase64 },
           signal,
+          temperature,
+          topP,
         });
         const text = typeof result === 'string' ? result : String(result);
         const trimmedText = text.trim();
@@ -1857,7 +1869,7 @@ EXAMPLES:
     });
   }
 
-  async function requestCaption({ apiKey, model, systemPrompt, item, signal }) {
+  async function requestCaption({ apiKey, model, systemPrompt, item, signal, temperature, topP }) {
     let userContent, systemContent;
     
     if (item.kind === 'image-pair') {
@@ -1910,6 +1922,8 @@ Instructions: ${systemPrompt}`;
         { role: 'system', content: systemContent },
         { role: 'user', content: userContent },
       ],
+      temperature: Number.isFinite(temperature) ? temperature : 0.7,
+      top_p: Number.isFinite(topP) ? topP : 1,
     };
     // Add reasoning parameter if model supports it and toggle is enabled (but not for VLLM)
     if (!api.useCustomEndpoint){
