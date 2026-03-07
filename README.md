@@ -1,6 +1,5 @@
 # DatasetCaption
-## *Serious Edition*
-### A lightweight, brower-based AI autocaptioning tool
+## AI-Powered LoRA Caption Generator
 #### https://obsxrver.com/DatasetCaption
 
 ## Features:
