@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LoRA Caption Generator for Image Datasets | Silly Caption</title>
-    <meta name="description" content="Generate high-quality LoRA training captions for image datasets and video frames using AI. Create consistent, detailed captions for Stable Diffusion and Flux LoRA training with custom prompts and batch processing.">
-    <meta name="keywords" content="LoRA caption generator, LoRA training captions, image dataset captioning, Stable Diffusion LoRA captions, Flux LoRA captions, auto caption for LoRA, AI image captioning for training, video frame captioning, dataset caption tool">
+    <title>AI Caption Generator for LoRA Training Datasets | SDXL, Flux, Wan 2.2 | DatasetCaption</title>
+    <meta name="description" content="Free AI-powered caption generator for LoRA training datasets. Uses OpenRouter LLMs to write detailed captions for photos and videos. Train better LoRA models for SDXL, Flux.2, Wan 2.2, Z-Image Turbo, and other state-of-the-art open source image and video models. Batch processing, custom prompts, and text-to-image or image-to-image captioning modes.">
+    <meta name="keywords" content="LoRA caption generator, LoRA training captions, image dataset captioning, SDXL LoRA captions, Flux LoRA captions, Flux.2 captioning, Wan 2.2 LoRA training, Z-Image Turbo captions, auto caption for LoRA, AI image captioning, AI video captioning, OpenRouter LLM captioning, dataset caption tool, video frame captioning, batch image captioning, text-to-image captions, image-to-image captions, Stable Diffusion LoRA training, fine-tuning captions, AI training data preparation">
     <meta name="author" content="obsxrver">
     <meta name="robots" content="index, follow">
     <meta name="language" content="English">
@@ -13,21 +13,21 @@
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://obsxrver.com/SillyCaption/">
-    <meta property="og:title" content="LoRA Caption Generator for Image Datasets | Silly Caption">
-    <meta property="og:description" content="Generate high-quality LoRA training captions for image datasets and video frames using AI. Create consistent captions for Stable Diffusion and Flux LoRA training.">
-    <meta property="og:image" content="https://obsxrver.com/SillyCaption/static/pfp_xs.webp">
-    <meta property="og:site_name" content="Silly Caption">
+    <meta property="og:url" content="https://obsxrver.com/DatasetCaption/">
+    <meta property="og:title" content="AI Caption Generator for LoRA Training | SDXL, Flux, Wan 2.2 | DatasetCaption">
+    <meta property="og:description" content="Free tool that uses OpenRouter LLMs to generate detailed captions for photos and videos. Train better LoRA models for SDXL, Flux.2, Wan 2.2, Z-Image Turbo, and more. Batch processing with custom prompts.">
+    <meta property="og:image" content="https://obsxrver.com/DatasetCaption/static/pfp_xs.webp">
+    <meta property="og:site_name" content="DatasetCaption">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://obsxrver.com/SillyCaption/">
-    <meta property="twitter:title" content="LoRA Caption Generator for Image Datasets | Silly Caption">
-    <meta property="twitter:description" content="Generate high-quality LoRA training captions for image datasets and video frames using AI. Create consistent captions for Stable Diffusion and Flux LoRA training.">
-    <meta property="twitter:image" content="https://obsxrver.com/SillyCaption/static/pfp_xs.webp">
+    <meta property="twitter:url" content="https://obsxrver.com/DatasetCaption/">
+    <meta property="twitter:title" content="AI Caption Generator for LoRA Training | SDXL, Flux, Wan 2.2 | DatasetCaption">
+    <meta property="twitter:description" content="Free tool that uses OpenRouter LLMs to generate detailed captions for photos and videos. Train better LoRA models for SDXL, Flux.2, Wan 2.2, Z-Image Turbo, and more. Batch processing with custom prompts.">
+    <meta property="twitter:image" content="https://obsxrver.com/DatasetCaption/static/pfp_xs.webp">
 
     <!-- Canonical URL -->
-    <link rel="canonical" href="https://obsxrver.com/SillyCaption/">
+    <link rel="canonical" href="https://obsxrver.com/DatasetCaption/">
 
     <!-- Favicon and icons -->
     <link rel="icon" href="static/favicon2.ico">
@@ -46,9 +46,9 @@
     {
       "@context": "https://schema.org",
       "@type": "WebApplication",
-      "name": "Silly Caption LoRA Caption Generator",
-      "description": "LoRA caption generator for image datasets and video frames using AI models for Stable Diffusion and Flux training",
-      "url": "https://obsxrver.com/SillyCaption/",
+      "name": "DatasetCaption — AI Caption Generator for LoRA Training",
+      "description": "Free AI-powered caption generator that uses OpenRouter LLMs to write detailed captions for photos and videos. Create high-quality training data for LoRA fine-tuning of SDXL, Flux.2, Wan 2.2, Z-Image Turbo, and other open source image and video models.",
+      "url": "https://obsxrver.com/DatasetCaption/",
       "applicationCategory": "MultimediaApplication",
       "operatingSystem": "Web Browser",
       "offers": {
@@ -61,26 +61,18 @@
         "name": "obsxrver"
       },
       "featureList": [
-        "Image captioning",
-        "Video frame captioning",
-        "LoRA training",
-        "LoRA caption",
-        "Captioner",
-        "Auto caption",
-        "Image captioning",
-        "Video captioning",
-        "AI image description",
-        "AI video description",
-        "Caption generator",
-        "OpenRouter",
-        "AI models",
-        "Content creation",
-        "Image analysis",
-        "Multiple AI model support",
-        "Custom system prompts",
-        "Batch processing",
-        "Caption export",
-        "OpenRouter integration"
+        "AI-powered image and video captioning via OpenRouter LLMs",
+        "LoRA training caption generation for SDXL, Flux.2, Wan 2.2, Z-Image Turbo",
+        "Text-to-image and image-to-image captioning modes",
+        "Batch processing with concurrent API requests",
+        "Video frame extraction and captioning",
+        "Custom system prompts and reusable prompt presets",
+        "Multiple AI model support (Google, OpenAI, Anthropic, Meta, Mistral, Qwen)",
+        "Caption export as ZIP with paired text files",
+        "Image downscaling for cost-efficient API usage",
+        "OpenRouter OAuth sign-in or manual API key",
+        "Custom VLLM server support",
+        "Free and open source"
       ]
     }
     </script>
@@ -97,14 +89,17 @@
 <body>
     <header>
         <div class="header-left">
-            <h1>Silly Caption</h1>
-            <div class="subtitle">LoRA Caption Generator</div>
+            <h1>DatasetCaption</h1>
+            <div class="subtitle">AI-Powered LoRA Caption Generator</div>
         </div>
         <a href="https://obsxrver.com" target="_blank" rel="noreferrer noopener" class="profile-link">
             <img src="static/pfp_xs.webp" alt="Obsxrver Profile Picture">
         </a>
     </header>
     <main>
+        <section class="about">
+            <p>Generate high-quality captions for your LoRA training datasets using AI. DatasetCaption connects to <a href="https://openrouter.ai" target="_blank" rel="noreferrer noopener">OpenRouter</a> to have an LLM analyze and write detailed captions for your photos and videos — perfect for training LoRA models on state-of-the-art open source models like <strong>SDXL</strong>, <strong>Flux.2</strong>, <strong>Wan 2.2</strong>, and <strong>Z-Image Turbo</strong>. Supports text-to-image and image-to-image captioning modes, batch processing, video frame extraction, and fully customizable prompts.</p>
+        </section>
         <section class="controls">
             <div class="field">
                 <label>OpenRouter Account</label>

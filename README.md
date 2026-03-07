@@ -1,7 +1,7 @@
-# Silly Caption
+# DatasetCaption
 ## *Serious Edition*
 ### A lightweight, brower-based AI autocaptioning tool
-#### https://obsxrver.com/SillyCaption
+#### https://obsxrver.com/DatasetCaption
 
 ## Features:
 - Openrouter.AI Integration

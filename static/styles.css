@@ -215,6 +215,35 @@ main {
   margin: 0 auto;
 }
 
+.about {
+  margin-bottom: 24px;
+  padding: 20px 28px;
+  background: rgba(26, 26, 26, 0.7);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  line-height: 1.65;
+  color: var(--muted);
+  font-size: 0.925rem;
+}
+
+.about p { margin: 0; }
+
+.about a {
+  color: var(--accent-color);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.about a:hover {
+  color: var(--text);
+  text-decoration: underline;
+}
+
+.about strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
 .controls {
   display: grid;
   grid-template-columns: minmax(0, 1fr);

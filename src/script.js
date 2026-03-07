@@ -1936,8 +1936,8 @@ Instructions: ${systemPrompt}`;
     // console.log(body);
     const headers = {
       'Content-Type': 'application/json',
-      'HTTP-Referer': 'https://obsxrver.pro/SillyCaption',
-      'X-Title': 'SillyCaption',
+      'HTTP-Referer': 'https://obsxrver.com/DatasetCaption',
+      'X-Title': 'DatasetCaption',
     };
 
     // Use authentication for custom VLLM server, otherwise use API key for OpenRouter
