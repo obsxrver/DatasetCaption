@@ -113,15 +113,15 @@ You are a professional image/video annotator. Please complete the following task
 3. Identify the text visible in the image, without translation or explanation, and highlight it in the caption with quotation marks.
 4. Maintain authenticity and accuracy, avoid generalizations.`,
     };
-    const woman = {
-      name: 'Character LoRA - Woman',
+    const character = {
+      name: 'Character LoRA',
       prompt:
-        `Generate a caption for this image or sequence of images following this format:
-"ohwx_girl, wearing [clothing], [how she is posed],  [scene], [setting], [framing], [lighting]"
+        `Generate a caption for this image or video following this format:
+"ohwx, wearing [clothing], [how the character is posed],  [scene], [setting], [framing], [lighting]"
 
 Rules:
 1. Clothing: List all visible clothing items and prominent accessories
-2. Pose: Describe a. How she is posed and b. her facial expression and c. direction of her gaze (when eyes are open), if looking at the viewer/camera, use "looking at camera"
+2. Pose: Describe a. How the character is posed and b. their facial expression and c. direction of their gaze (when eyes are open), if looking at the viewer/camera, use "looking at camera"
 3. Scene: What, if anything, the person is doing in the shot
 4. Setting: brief description of the foreground and background
 5. Framing, how much of the person is in the shot
@@ -132,16 +132,17 @@ STRICT REQUIREMENTS:
 - Keep caption under 60 tokens
 - Use concise, descriptive language
 - Separate each section with commas
-- Start every caption with "ohwx_girl"
+- Start every caption with "ohwx"
+- Include gendered pronouns for the character, use "she" for female characters and "he" for male characters
 
 Example output:
-ohwx_girl, wearing a white sports bra and black athletic shorts, standing with hands on hips, smiling and looking up, exercising outdoors, on a running track with a stadium in the background, medium shot of her head and torso, bright daylight
+ohwx, wearing a white sports bra and black athletic shorts, she is standing with hands on hips, smiling and looking up, exercising outdoors, on a running track with a stadium in the background, medium shot of her head and torso, bright daylight
 
-ohwx_girl, wearing a floral sundress and a straw hat, sitting on a blanket and holding a book, relaxed and looking down at the book, reading, in a grassy field with trees, full body, soft afternoon light
+ohwx, wearing a floral sundress and a straw hat, she is sitting on a blanket and holding a book, relaxed and looking down at the book, reading, in a grassy field with trees, full body, soft afternoon light
 
-ohwx_girl, wearing a gray blazer and black slacks, standing and gesturing with one hand, focused and looking slightly off-camera, giving a presentation, full body, in a modern office with large windows, overheard fluorescent light
+ohwx, wearing a gray blazer and black slacks, he is standing and gesturing with one hand, focused and looking slightly off-camera, giving a presentation, full body, in a modern office with large windows, overheard fluorescent light
 
-ohwx_girl, wearing a crocheted vest and denim cutoff shorts, leaning against a vintage car, smirking and looking at camera, posing next to a vehicle, in a paved parking lot with a brick wall, close-up of head and shoulders, warm ambient light`,
+ohwx, wearing a crocheted vest and denim cutoff shorts, she isleaning against a vintage car, smirking and looking at camera, posing next to a vehicle, in a paved parking lot with a brick wall, close-up of her head and shoulders, warm ambient light`,
     };
     const style = {
       name: 'Style LoRA',
@@ -271,7 +272,7 @@ EXAMPLES:
 ✓ "zoomed in and centered the subject"`,
     };
 
-    return [annotator, woman, style, action, styleTransfer, colorCorrection, compositionEdit];
+    return [character, annotator, style, action, styleTransfer, colorCorrection, compositionEdit];
   }
 
   function loadPresets() {
