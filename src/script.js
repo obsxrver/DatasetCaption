@@ -65,8 +65,7 @@
     modelOptions: el('modelOptions'),
     sortOrder: el('sortOrder'),
     videoFilter: el('videoFilter'),
-    reasoningToggle: el('reasoningToggle'),
-    reasoningToggleField: el('reasoningToggleField'),
+    reasoningEffort: el('reasoningEffort'),
     modeToggle: el('modeToggle'),
     modeLabel: el('modeLabel'),
     modeDescription: el('modeDescription'),
@@ -98,7 +97,10 @@
     customVllmBearerToken: 'sc_custom_vllm_bearer_token',
     customVllmUsername: 'sc_custom_vllm_username',
     customVllmPassword: 'sc_custom_vllm_password',
+    reasoningEffort: 'sc_reasoning_effort',
   };
+
+  const reasoningEffortValues = new Set(['xhigh', 'high', 'medium', 'low', 'minimal', 'none']);
 
   // Presets helpers
   function defaultPresets() {
@@ -322,6 +324,20 @@ EXAMPLES:
     ui.apiKey.addEventListener('input', () => {
       try { localStorage.setItem(storageKeys.apiKey, ui.apiKey.value); } catch { }
     });
+
+    // Reasoning effort
+    try {
+      const savedReasoningEffort = localStorage.getItem(storageKeys.reasoningEffort);
+      if (ui.reasoningEffort && reasoningEffortValues.has(savedReasoningEffort)) {
+        ui.reasoningEffort.value = savedReasoningEffort;
+      }
+    } catch { }
+    if (ui.reasoningEffort) {
+      ui.reasoningEffort.addEventListener('change', () => {
+        const effort = getSelectedReasoningEffort();
+        try { localStorage.setItem(storageKeys.reasoningEffort, effort); } catch { }
+      });
+    }
 
     // Custom VLLM settings
     try {
@@ -1838,6 +1854,11 @@ EXAMPLES:
     return base.replace(/[\\\/:*?"<>|]/g, '_');
   }
 
+  function getSelectedReasoningEffort() {
+    const effort = ui.reasoningEffort?.value || 'medium';
+    return reasoningEffortValues.has(effort) ? effort : 'medium';
+  }
+
   async function downscaleImageDataUrl(dataUrl, targetMp) {
     const mp = Math.max(0.01, Number(targetMp) || 1);
     const img = await loadImageFromDataUrl(dataUrl);
@@ -1925,14 +1946,11 @@ Instructions: ${systemPrompt}`;
       ],
       temperature: Number.isFinite(temperature) ? temperature : 0.7,
       top_p: Number.isFinite(topP) ? topP : 1,
+      reasoning: { effort: getSelectedReasoningEffort() },
     };
-    // Add reasoning parameter if model supports it and toggle is enabled (but not for VLLM)
     if (!api.useCustomEndpoint){
         body.stream = true;
         body.provider = {ignore:["alibaba"],sort:"throughput"}
-      if(modelSupportsReasoning(model) && ui.reasoningToggle && ui.reasoningToggle.checked) {
-        body.reasoning = { enabled: true };
-      }
     }
     // console.log(body);
     const headers = {
@@ -2208,15 +2226,6 @@ Instructions: ${systemPrompt}`;
         localStorage.setItem(storageKeys.selectedModelLocal, model.id);
       } else {
         localStorage.setItem(storageKeys.selectedModelOpenRouter, model.id);
-      }
-    }
-    let creator = modelId.split('/')[0];
-    // Show/hide reasoning toggle based on model support
-    if (ui.reasoningToggleField) {
-      if (modelSupportsReasoning(modelId) && (creator ==='google' || creator === 'anthropic')) {
-        ui.reasoningToggleField.style.display = '';
-      } else {
-        ui.reasoningToggleField.style.display = 'none';
       }
     }
   }

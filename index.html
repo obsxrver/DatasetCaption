@@ -34,7 +34,7 @@
     <link rel="apple-touch-icon" href="static/pfp_xs.webp">
 
     <!-- Stylesheet -->
-    <link rel="stylesheet" href="static/styles.css?v=022626.2">
+    <link rel="stylesheet" href="static/styles.css?v=041226.1">
 
     <!-- Cache control -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
@@ -151,12 +151,16 @@
                 </div>
                 <input type="hidden" id="modelId">
             </div>
-            <div class="field reasoning-field" id="reasoningToggleField" style="display: none;">
-                <label class="switch">
-                    <input type="checkbox" id="reasoningToggle" checked>
-                    <span class="slider"></span>
-                </label>
-                <label>🧠 (Reasoning)</label>
+            <div class="field reasoning-field">
+                <label for="reasoningEffort">Reasoning Effort</label>
+                <select id="reasoningEffort">
+                    <option value="xhigh">xhigh</option>
+                    <option value="high">high</option>
+                    <option value="medium" selected>medium</option>
+                    <option value="low">low</option>
+                    <option value="minimal">minimal</option>
+                    <option value="none">none</option>
+                </select>
             </div>
             <div class="field">
                 <label>Training Mode</label>
@@ -291,7 +295,7 @@
     </footer>
 
     <script src="src/3rd-party/jszip.min.js"></script>
-    <script src="src/script.min.js?v=022626.2"></script>
+    <script src="src/script.min.js?v=041226.1"></script>
 </body>
 </html>
 

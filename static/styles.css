@@ -1137,14 +1137,11 @@ textarea:focus-visible {
 
 /* Toggle Switch Styling */
 .reasoning-field {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  flex-direction: row !important;
-  gap: 12px;
+  display: grid;
+  gap: 8px;
 }
 
-.reasoning-field > label:last-child {
+.reasoning-field > label {
   margin: 0;
   font-size: 14px;
   color: var(--text);
