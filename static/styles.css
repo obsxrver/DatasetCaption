@@ -458,6 +458,19 @@ textarea::-webkit-scrollbar-thumb:hover {
   flex-wrap: wrap;
 }
 
+.auth-actions .sign-out-action {
+  background: rgba(255, 122, 111, 0.14);
+  color: #ffd8d3;
+  border-color: rgba(255, 122, 111, 0.28);
+  box-shadow: none;
+}
+
+.auth-actions .sign-out-action:hover {
+  background: rgba(255, 122, 111, 0.22);
+  color: #ffffff;
+  box-shadow: none;
+}
+
 .preset-row {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(112px, 0.8fr) auto auto;
@@ -825,6 +838,18 @@ button[disabled] {
   stroke-width: 2;
 }
 
+.preset-icon-button .icon-check {
+  display: none;
+}
+
+.preset-icon-button.is-confirming .icon-edit {
+  display: none;
+}
+
+.preset-icon-button.is-confirming .icon-check {
+  display: block;
+}
+
 .preset-menu {
   position: absolute;
   top: calc(100% + 8px);
@@ -832,7 +857,7 @@ button[disabled] {
   right: 0;
   z-index: 32;
   display: none;
-  max-height: 250px;
+  max-height: min(320px, 48vh);
   overflow: auto;
   padding: 6px;
   color: var(--ink);
@@ -851,7 +876,14 @@ button[disabled] {
   transform: rotate(225deg) translateY(-2px);
 }
 
-.preset-option {
+.preset-option-row {
+  display: grid;
+  min-width: 0;
+  border-radius: 6px;
+}
+
+.preset-option,
+.preset-name-input {
   display: block;
   width: 100%;
   min-height: 36px;
@@ -874,22 +906,120 @@ button[disabled] {
   transform: none;
 }
 
+.preset-option-row.selected .preset-option,
 .preset-option.selected {
   color: #064d44;
   background: #d9f3ec;
+}
+
+.preset-create-option {
+  margin-bottom: 6px;
+  color: #075f55;
+  background: rgba(8, 127, 111, 0.1);
+  border: 1px solid rgba(8, 127, 111, 0.18);
+}
+
+.preset-create-option:hover {
+  background: rgba(8, 127, 111, 0.18);
+}
+
+.preset-name-input {
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--accent);
+  box-shadow: 0 0 0 3px rgba(8, 127, 111, 0.14);
 }
 
 :root[data-theme="dark"] .preset-menu {
   background: #111613;
 }
 
-:root[data-theme="dark"] .preset-option {
+:root[data-theme="dark"] .preset-option,
+:root[data-theme="dark"] .preset-name-input {
   color: var(--ink);
 }
 
+:root[data-theme="dark"] .preset-option-row.selected .preset-option,
 :root[data-theme="dark"] .preset-option.selected {
   color: #dffbf5;
   background: #17342e;
+}
+
+:root[data-theme="dark"] .preset-create-option {
+  color: #dffbf5;
+  background: rgba(50, 184, 163, 0.13);
+  border-color: rgba(50, 184, 163, 0.22);
+}
+
+.system-prompt-field {
+  gap: 10px;
+}
+
+.system-prompt-editor {
+  position: relative;
+}
+
+.system-prompt-editor textarea {
+  display: block;
+  min-height: 220px;
+  padding-right: 48px;
+  resize: vertical;
+  transition: min-height 160ms ease, max-height 160ms ease, box-shadow 140ms ease;
+}
+
+.system-prompt-editor.is-collapsed textarea {
+  min-height: 58px;
+  max-height: 58px;
+  overflow: hidden;
+  resize: none;
+}
+
+.system-prompt-editor.is-collapsed::after {
+  content: "...";
+  position: absolute;
+  right: 14px;
+  bottom: 10px;
+  padding-left: 30px;
+  color: var(--rail-muted);
+  background: linear-gradient(90deg, rgba(16, 21, 18, 0), #101512 36%);
+  pointer-events: none;
+}
+
+.prompt-done-button {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 32px;
+  min-width: 32px;
+  min-height: 32px;
+  padding: 0;
+  background: rgba(126, 225, 205, 0.12);
+  border-color: rgba(126, 225, 205, 0.22);
+  box-shadow: none;
+}
+
+.prompt-done-button:hover {
+  background: rgba(126, 225, 205, 0.2);
+  box-shadow: none;
+  transform: none;
+}
+
+.prompt-done-button svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+.system-prompt-editor.is-collapsed .prompt-done-button {
+  display: none;
+}
+
+.save-current-prompt {
+  width: 100%;
 }
 
 .mode-switch,

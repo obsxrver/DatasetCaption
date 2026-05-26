@@ -24,10 +24,13 @@
     vllmFetchSeq: 0,
     currentItems: [],
     refreshSeq: 0,
+    presetEditingName: '',
+    presetDraftName: '',
   };
 
   const ui = {
     apiKey: el('apiKey'),
+    apiKeyField: el('apiKeyField'),
     btnSignIn: el('btnSignIn'),
     btnSignOut: el('btnSignOut'),
     authStatus: el('authStatus'),
@@ -45,6 +48,9 @@
     presetMenu: el('presetMenu'),
     btnSavePreset: el('btnSavePreset'),
     btnDeletePreset: el('btnDeletePreset'),
+    systemPromptEditor: el('systemPromptEditor'),
+    btnCollapsePrompt: el('btnCollapsePrompt'),
+    btnSavePromptToPreset: el('btnSavePromptToPreset'),
     rps: el('rps'),
     concurrency: el('concurrency'),
     framesPerVideo: el('framesPerVideo'),
@@ -466,9 +472,209 @@ EXAMPLES:
     const currentPresets = loadPresets() || [];
     const preset = currentPresets.find((p) => p.name === name);
     if (!preset) return;
+    state.presetEditingName = '';
+    state.presetDraftName = '';
     ui.systemPrompt.value = preset.prompt;
     updatePresetDisplay(preset.name);
     try { localStorage.setItem(storageKeys.lastPreset, preset.name); } catch { }
+  }
+
+  function renderPresetOptions(presets, selectedName) {
+    if (ui.presetSelect) {
+      ui.presetSelect.innerHTML = '';
+      const placeholder = document.createElement('option');
+      placeholder.value = '';
+      placeholder.textContent = 'Select preset';
+      ui.presetSelect.appendChild(placeholder);
+    }
+    if (ui.presetMenu) {
+      ui.presetMenu.innerHTML = '';
+      const createButton = document.createElement('button');
+      createButton.type = 'button';
+      createButton.className = 'preset-option preset-create-option';
+      createButton.textContent = 'New preset';
+      createButton.addEventListener('click', createNewPreset);
+      ui.presetMenu.appendChild(createButton);
+    }
+    for (const preset of presets) {
+      if (ui.presetSelect) {
+        const opt = document.createElement('option');
+        opt.value = preset.name;
+        opt.textContent = preset.name;
+        if (selectedName && preset.name === selectedName) opt.selected = true;
+        ui.presetSelect.appendChild(opt);
+      }
+      if (ui.presetMenu) {
+        ui.presetMenu.appendChild(renderPresetMenuOption(preset, selectedName));
+      }
+    }
+    updatePresetDisplay(selectedName || '');
+  }
+
+  function renderPresetMenuOption(preset, selectedName) {
+    const selected = selectedName && preset.name === selectedName;
+    const editing = state.presetEditingName && state.presetEditingName === preset.name;
+    const row = document.createElement('div');
+    row.className = 'preset-option-row';
+    row.dataset.value = preset.name;
+    row.role = 'option';
+    row.setAttribute('aria-selected', selected ? 'true' : 'false');
+    row.classList.toggle('selected', selected);
+    row.classList.toggle('is-editing', editing);
+
+    if (editing) {
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.className = 'preset-name-input';
+      input.value = preset.name;
+      input.setAttribute('aria-label', 'Preset name');
+      input.addEventListener('click', (event) => event.stopPropagation());
+      input.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          commitPresetNameEdit();
+        } else if (event.key === 'Escape') {
+          event.preventDefault();
+          cancelPresetNameEdit();
+        }
+      });
+      row.appendChild(input);
+      requestAnimationFrame(() => {
+        input.focus();
+        input.select();
+      });
+    } else {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'preset-option';
+      button.textContent = preset.name;
+      button.title = preset.name;
+      button.addEventListener('click', () => {
+        applyPresetSelection(preset.name);
+        closePresetMenu();
+      });
+      row.appendChild(button);
+    }
+
+    return row;
+  }
+
+  function updatePresetDisplay(name) {
+    if (ui.selectedPresetName) {
+      ui.selectedPresetName.textContent = name || 'Select a preset...';
+    }
+    if (ui.presetSelect) {
+      ui.presetSelect.value = name || '';
+    }
+    if (ui.presetName) {
+      ui.presetName.value = name || '';
+    }
+    if (ui.presetMenu) {
+      ui.presetMenu.querySelectorAll('.preset-option-row').forEach((option) => {
+        const selected = option.dataset.value === name;
+        option.classList.toggle('selected', selected);
+        option.setAttribute('aria-selected', selected ? 'true' : 'false');
+      });
+    }
+    updatePresetEditButton();
+  }
+
+  function updatePresetEditButton() {
+    if (!ui.btnSavePreset) return;
+    const editing = !!state.presetEditingName;
+    ui.btnSavePreset.classList.toggle('is-confirming', editing);
+    ui.btnSavePreset.setAttribute('aria-label', editing ? 'Save preset name' : 'Edit selected preset name');
+    ui.btnSavePreset.title = editing ? 'Save preset name' : 'Edit selected preset name';
+  }
+
+  function getSelectedPresetName() {
+    return (ui.presetSelect?.value || ui.presetName?.value || '').trim();
+  }
+
+  function uniquePresetName(base, presets) {
+    const names = new Set(presets.map((preset) => preset.name));
+    if (!names.has(base)) return base;
+    let index = 2;
+    while (names.has(`${base} ${index}`)) index += 1;
+    return `${base} ${index}`;
+  }
+
+  function createNewPreset() {
+    const presets = loadPresets() || [];
+    const name = uniquePresetName('New preset', presets);
+    presets.unshift({ name, prompt: ui.systemPrompt?.value || '' });
+    savePresets(presets);
+    state.presetDraftName = name;
+    applyPresetSelection(name);
+    beginPresetNameEdit(name);
+  }
+
+  function beginPresetNameEdit(name = getSelectedPresetName()) {
+    if (!name) return;
+    state.presetEditingName = name;
+    renderPresetOptions(loadPresets() || [], name);
+    openPresetMenu();
+    updatePresetEditButton();
+  }
+
+  function cancelPresetNameEdit() {
+    const draftName = state.presetDraftName;
+    state.presetEditingName = '';
+    state.presetDraftName = '';
+    if (draftName) {
+      const presets = (loadPresets() || []).filter((preset) => preset.name !== draftName);
+      savePresets(presets);
+      renderPresetOptions(presets, '');
+      updatePresetDisplay('');
+      return;
+    }
+    renderPresetOptions(loadPresets() || [], getSelectedPresetName());
+  }
+
+  function commitPresetNameEdit() {
+    const oldName = state.presetEditingName;
+    if (!oldName) return;
+    const input = ui.presetMenu?.querySelector('.preset-name-input');
+    const newName = (input?.value || '').trim();
+    if (!newName) {
+      alert('Enter a preset name');
+      input?.focus();
+      return;
+    }
+
+    const presets = loadPresets() || [];
+    const existingIdx = presets.findIndex((preset) => preset.name === oldName);
+    if (existingIdx < 0) return;
+    const duplicate = presets.some((preset, index) => index !== existingIdx && preset.name === newName);
+    if (duplicate) {
+      alert('A preset with that name already exists');
+      input?.focus();
+      input?.select();
+      return;
+    }
+
+    presets[existingIdx] = { ...presets[existingIdx], name: newName };
+    savePresets(presets);
+    state.presetEditingName = '';
+    state.presetDraftName = '';
+    renderPresetOptions(presets, newName);
+    updatePresetDisplay(newName);
+    try { localStorage.setItem(storageKeys.lastPreset, newName); } catch { }
+  }
+
+  function savePromptToCurrentPreset() {
+    const name = getSelectedPresetName();
+    if (!name) {
+      alert('Select or create a preset first');
+      return;
+    }
+    const presets = loadPresets() || [];
+    const idx = presets.findIndex((preset) => preset.name === name);
+    if (idx < 0) return;
+    presets[idx] = { ...presets[idx], prompt: ui.systemPrompt?.value || '' };
+    savePresets(presets);
+    renderPresetOptions(presets, name);
+    updatePresetDisplay(name);
   }
 
   function initPersistence() {
@@ -674,26 +880,15 @@ EXAMPLES:
 
     if (ui.btnSavePreset) {
       ui.btnSavePreset.addEventListener('click', () => {
-        const previousName = (ui.presetSelect?.value || ui.presetName?.value || '').trim();
-        const proposedName = window.prompt('Preset name', previousName || 'New preset');
-        if (proposedName === null) return;
-        const name = proposedName.trim();
-        if (!name) { alert('Enter a preset name'); return; }
-        const prompt = (ui.systemPrompt?.value || '').trim();
-        const currentPresets = loadPresets() || [];
-        if (previousName && previousName !== name) {
-          const previousIdx = currentPresets.findIndex((p) => p.name === previousName);
-          if (previousIdx >= 0) currentPresets.splice(previousIdx, 1);
+        if (state.presetEditingName) {
+          commitPresetNameEdit();
+        } else {
+          beginPresetNameEdit();
         }
-        const idx = currentPresets.findIndex((p) => p.name === name);
-        const entry = { name, prompt };
-        if (idx >= 0) currentPresets[idx] = entry; else currentPresets.push(entry);
-        savePresets(currentPresets);
-        renderPresetOptions(currentPresets, name);
-        try { localStorage.setItem(storageKeys.lastPreset, name); } catch { }
-        updatePresetDisplay(name);
       });
     }
+
+    ui.btnSavePromptToPreset?.addEventListener('click', savePromptToCurrentPreset);
 
     if (ui.btnDeletePreset) {
       ui.btnDeletePreset.addEventListener('click', () => {
@@ -863,9 +1058,33 @@ EXAMPLES:
       ui.authStatus.textContent = signedIn ? 'Signed in' : 'Signed out';
       ui.authStatus.classList.toggle('ok', signedIn);
     }
-    if (ui.btnSignIn) ui.btnSignIn.disabled = signedIn;
-    if (ui.btnSignOut) ui.btnSignOut.disabled = !signedIn;
+    if (ui.btnSignIn) {
+      ui.btnSignIn.disabled = signedIn;
+      ui.btnSignIn.classList.toggle('hidden', signedIn);
+    }
+    if (ui.btnSignOut) {
+      ui.btnSignOut.disabled = !signedIn;
+      ui.btnSignOut.classList.toggle('hidden', !signedIn);
+    }
+    if (ui.apiKeyField) ui.apiKeyField.classList.toggle('hidden', signedIn);
   }
+
+  function expandSystemPrompt() {
+    ui.systemPromptEditor?.classList.remove('is-collapsed');
+  }
+
+  function collapseSystemPrompt() {
+    ui.systemPromptEditor?.classList.add('is-collapsed');
+    ui.systemPrompt?.blur();
+  }
+
+  ui.systemPrompt?.addEventListener('focus', expandSystemPrompt);
+  ui.systemPromptEditor?.addEventListener('click', expandSystemPrompt);
+  ui.btnCollapsePrompt?.addEventListener('click', (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    collapseSystemPrompt();
+  });
 
   // Wire buttons
   ui.btnSignIn?.addEventListener('click', () => { beginOAuth(); });
