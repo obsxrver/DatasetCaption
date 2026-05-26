@@ -286,7 +286,7 @@ footer a {
 .drop-copy h2,
 .empty-state h2 {
   margin: 0;
-  font-size: clamp(24px, 2.6vw, 36px);
+  font-size: clamp(24px, 2vw, 36px);
   line-height: 1.02;
   letter-spacing: 0;
 }
@@ -851,8 +851,8 @@ button[disabled] {
 .drop-copy h2,
 .empty-state h2 {
   color: var(--ink);
-  font-size: clamp(30px, 4vw, 58px);
-  max-width: 12ch;
+  font-size: clamp(30px, 1vw, 58px);
+  max-width: 32ch;
 }
 
 .drop-copy p,
