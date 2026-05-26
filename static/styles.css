@@ -368,7 +368,9 @@ select {
   background: #20261f;
   border-color: #3a443c;
 }
-
+:root[data-theme="dark"] .status {
+  background: rgb(55 70 70 / 91%);
+}
 :root[data-theme="dark"] .command-rail input[type="text"],
 :root[data-theme="dark"] .command-rail input[type="password"],
 :root[data-theme="dark"] .command-rail input[type="number"],
