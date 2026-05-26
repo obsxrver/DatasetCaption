@@ -85,6 +85,7 @@
     modePill: el('modePill'),
     runMeta: el('runMeta'),
     setupStatus: el('setupStatus'),
+    themeToggle: el('themeToggle'),
   };
 
   // Persistent storage keys
@@ -103,6 +104,7 @@
     customVllmUsername: 'sc_custom_vllm_username',
     customVllmPassword: 'sc_custom_vllm_password',
     reasoningEffort: 'sc_reasoning_effort',
+    theme: 'dc_theme',
   };
 
   // Store of results for ZIP creation: Map<itemName, { caption: string, error: string|null }>
@@ -154,6 +156,29 @@
         <p>No assets queued.</p>
       </div>`;
     updateWorkspaceStats();
+  }
+
+  function getCurrentTheme() {
+    return document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
+  }
+
+  function setTheme(theme) {
+    const nextTheme = theme === 'dark' ? 'dark' : 'light';
+    document.documentElement.dataset.theme = nextTheme;
+    try { localStorage.setItem(storageKeys.theme, nextTheme); } catch { }
+    if (ui.themeToggle) {
+      const isDark = nextTheme === 'dark';
+      ui.themeToggle.setAttribute('aria-pressed', String(isDark));
+      ui.themeToggle.setAttribute('aria-label', isDark ? 'Switch to light theme' : 'Switch to dark theme');
+      ui.themeToggle.title = isDark ? 'Switch to light theme' : 'Switch to dark theme';
+    }
+  }
+
+  function initThemeToggle() {
+    setTheme(getCurrentTheme());
+    ui.themeToggle?.addEventListener('click', () => {
+      setTheme(getCurrentTheme() === 'dark' ? 'light' : 'dark');
+    });
   }
 
   // Presets helpers
@@ -2328,6 +2353,7 @@ Instructions: ${systemPrompt}`;
   }
 
   // Initialize persistence (API key, presets) once DOM elements are ready
+  initThemeToggle();
   initPersistence();
   initCustomDropdown();
   fetchModels();

@@ -25,6 +25,30 @@
   --mono: "SF Mono", "Cascadia Code", Consolas, monospace;
 }
 
+:root[data-theme="dark"] {
+  --bg: #0c0f0e;
+  --surface: #151a18;
+  --surface-2: #1e2522;
+  --ink: #f3f7f4;
+  --ink-soft: #c4cec8;
+  --muted: #8f9c95;
+  --line: #29322e;
+  --line-strong: #3a4641;
+  --rail: #090c0b;
+  --rail-2: #111613;
+  --rail-text: #f6faf7;
+  --rail-muted: #9ca9a2;
+  --accent: #32b8a3;
+  --accent-strong: #5dd4c2;
+  --accent-soft: #132a25;
+  --hot: #f07a4f;
+  --danger: #ff7a6f;
+  --ok: #73e0b5;
+  --warning: #f1b65d;
+  --shadow: 0 22px 54px rgba(0, 0, 0, 0.42);
+  --shadow-soft: 0 14px 34px rgba(0, 0, 0, 0.28);
+}
+
 * {
   box-sizing: border-box;
 }
@@ -45,6 +69,12 @@ body {
   letter-spacing: 0;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+}
+
+:root[data-theme="dark"] body {
+  background:
+    linear-gradient(180deg, rgba(32, 38, 35, 0.42), rgba(12, 15, 14, 0) 260px),
+    var(--bg);
 }
 
 ::selection {
@@ -80,6 +110,11 @@ body {
   background: rgba(244, 246, 245, 0.9);
   border-bottom: 1px solid rgba(216, 223, 220, 0.9);
   backdrop-filter: blur(18px);
+}
+
+:root[data-theme="dark"] .app-header {
+  background: rgba(12, 15, 14, 0.88);
+  border-bottom-color: rgba(41, 50, 46, 0.95);
 }
 
 .brand-lockup,
@@ -164,6 +199,51 @@ footer a {
   transition: transform 160ms ease, box-shadow 160ms ease;
 }
 
+.header-actions {
+  justify-self: end;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.theme-toggle {
+  width: 44px;
+  min-width: 44px;
+  height: 44px;
+  min-height: 44px;
+  padding: 0;
+  color: var(--ink-soft);
+  background: var(--surface);
+  border-color: var(--line);
+  border-radius: 50%;
+  box-shadow: 0 8px 24px rgba(24, 31, 28, 0.06);
+}
+
+.theme-toggle:hover {
+  color: var(--ink);
+  background: var(--surface-2);
+  box-shadow: 0 0 0 5px rgba(8, 127, 111, 0.12);
+}
+
+.theme-icon {
+  width: 19px;
+  height: 19px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.theme-icon-moon,
+:root[data-theme="dark"] .theme-icon-sun {
+  display: none;
+}
+
+:root[data-theme="dark"] .theme-icon-moon {
+  display: block;
+}
+
 .profile-link:hover {
   transform: translateY(-1px);
   box-shadow: 0 0 0 5px rgba(8, 127, 111, 0.12);
@@ -190,6 +270,10 @@ footer a {
   border: 1px solid #2e362f;
   border-radius: var(--radius);
   box-shadow: var(--shadow);
+}
+
+:root[data-theme="dark"] .command-rail {
+  border-color: #1e2924;
 }
 
 .rail-intro {
@@ -283,6 +367,16 @@ select {
   color: var(--rail-text);
   background: #20261f;
   border-color: #3a443c;
+}
+
+:root[data-theme="dark"] .command-rail input[type="text"],
+:root[data-theme="dark"] .command-rail input[type="password"],
+:root[data-theme="dark"] .command-rail input[type="number"],
+:root[data-theme="dark"] .command-rail textarea,
+:root[data-theme="dark"] .command-rail select,
+:root[data-theme="dark"] .custom-select-trigger {
+  background: #101512;
+  border-color: #26322d;
 }
 
 input:hover,
@@ -403,6 +497,12 @@ button[disabled] {
   box-shadow: none;
 }
 
+:root[data-theme="dark"] .secondary-action {
+  color: #b7f3e8;
+  background: rgba(50, 184, 163, 0.14);
+  border-color: rgba(50, 184, 163, 0.25);
+}
+
 .command-rail .secondary-action {
   color: #c5f5e9;
   background: rgba(126, 225, 205, 0.1);
@@ -516,6 +616,10 @@ button[disabled] {
   box-shadow: var(--shadow);
 }
 
+:root[data-theme="dark"] .custom-options-header {
+  background: #111613;
+}
+
 .custom-select.open .custom-options {
   display: flex;
   flex-direction: column;
@@ -538,6 +642,13 @@ button[disabled] {
   background: var(--surface);
   border-color: var(--line);
   font-size: 12px;
+}
+
+:root[data-theme="dark"] .custom-options-header input,
+:root[data-theme="dark"] .custom-options-header select {
+  background: #101512;
+  color: var(--ink);
+  border-color: var(--line);
 }
 
 .model-filter-toggle {
@@ -574,6 +685,10 @@ button[disabled] {
 .custom-option.selected {
   background: #e6f7f2;
   border-left-color: var(--accent);
+}
+
+:root[data-theme="dark"] .custom-option.selected {
+  background: #17342e;
 }
 
 .custom-option .model-name {
@@ -719,6 +834,12 @@ button[disabled] {
   box-shadow: var(--shadow-soft);
 }
 
+:root[data-theme="dark"] .drop-zone {
+  background:
+    linear-gradient(90deg, rgba(50, 184, 163, 0.12), rgba(240, 122, 79, 0.07)),
+    var(--surface);
+}
+
 .drop-copy {
   display: grid;
   gap: 9px;
@@ -806,6 +927,11 @@ progress {
   background: #dfe7e3;
 }
 
+:root[data-theme="dark"] progress,
+:root[data-theme="dark"] progress::-webkit-progress-bar {
+  background: #22302b;
+}
+
 progress::-webkit-progress-bar {
   background: #dfe7e3;
   border-radius: 999px;
@@ -870,6 +996,25 @@ progress::-moz-progress-bar {
   border: 1px solid rgba(8, 127, 111, 0.18);
 }
 
+:root[data-theme="dark"] .empty-preview span {
+  background:
+    linear-gradient(140deg, rgba(50, 184, 163, 0.22), rgba(50, 184, 163, 0.04)),
+    #18231f;
+  border-color: rgba(50, 184, 163, 0.16);
+}
+
+:root[data-theme="dark"] .empty-preview span:first-child {
+  background:
+    linear-gradient(150deg, rgba(240, 122, 79, 0.22), rgba(50, 184, 163, 0.12)),
+    #1a2420;
+}
+
+:root[data-theme="dark"] .empty-preview span:nth-child(3) {
+  background:
+    linear-gradient(150deg, rgba(243, 247, 244, 0.12), rgba(240, 122, 79, 0.06)),
+    #1b211f;
+}
+
 .empty-preview span:first-child {
   grid-row: 1 / -1;
   background:
@@ -923,6 +1068,13 @@ progress::-moz-progress-bar {
   background: #111412;
 }
 
+:root[data-theme="dark"] .media .left,
+:root[data-theme="dark"] .media img,
+:root[data-theme="dark"] .media video,
+:root[data-theme="dark"] .media canvas {
+  background: #050706;
+}
+
 .media img,
 .media video,
 .media canvas {
@@ -957,6 +1109,10 @@ progress::-moz-progress-bar {
   background: #f8faf9;
 }
 
+:root[data-theme="dark"] .caption {
+  background: #111613;
+}
+
 .caption textarea {
   width: 100%;
   min-width: 0;
@@ -983,6 +1139,12 @@ progress::-moz-progress-bar {
   background: #fff1ee;
 }
 
+:root[data-theme="dark"] .caption.error textarea,
+:root[data-theme="dark"] .caption.error {
+  color: #ffd2cc;
+  background: #351511;
+}
+
 .meta {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
@@ -992,6 +1154,10 @@ progress::-moz-progress-bar {
   padding: 9px 10px 9px 14px;
   border-top: 1px solid var(--line);
   background: #fbfcfb;
+}
+
+:root[data-theme="dark"] .meta {
+  background: #121715;
 }
 
 .meta-left {
