@@ -36,8 +36,13 @@
     files: el('files'),
     outputFiles: el('outputFiles'),
     outputFilesField: el('outputFilesField'),
+    dropZone: el('dropZone'),
     presetSelect: el('presetSelect'),
     presetName: el('presetName'),
+    presetControl: el('presetControl'),
+    presetTrigger: el('presetTrigger'),
+    selectedPresetName: el('selectedPresetName'),
+    presetMenu: el('presetMenu'),
     btnSavePreset: el('btnSavePreset'),
     btnDeletePreset: el('btnDeletePreset'),
     rps: el('rps'),
@@ -392,6 +397,78 @@ EXAMPLES:
       if (selectedName && p.name === selectedName) opt.selected = true;
       ui.presetSelect.appendChild(opt);
     }
+    if (ui.presetMenu) {
+      ui.presetMenu.innerHTML = '';
+      for (const p of presets) {
+        const option = document.createElement('button');
+        option.type = 'button';
+        option.className = 'preset-option';
+        option.role = 'option';
+        option.dataset.value = p.name;
+        option.textContent = p.name;
+        option.title = p.name;
+        if (selectedName && p.name === selectedName) {
+          option.classList.add('selected');
+          option.setAttribute('aria-selected', 'true');
+        } else {
+          option.setAttribute('aria-selected', 'false');
+        }
+        option.addEventListener('click', () => {
+          applyPresetSelection(p.name);
+          closePresetMenu();
+        });
+        ui.presetMenu.appendChild(option);
+      }
+    }
+    updatePresetDisplay(selectedName || '');
+  }
+
+  function updatePresetDisplay(name) {
+    if (ui.selectedPresetName) {
+      ui.selectedPresetName.textContent = name || 'Select a preset...';
+    }
+    if (ui.presetSelect) {
+      ui.presetSelect.value = name || '';
+    }
+    if (ui.presetName) {
+      ui.presetName.value = name || '';
+    }
+    if (ui.presetMenu) {
+      ui.presetMenu.querySelectorAll('.preset-option').forEach((option) => {
+        const selected = option.dataset.value === name;
+        option.classList.toggle('selected', selected);
+        option.setAttribute('aria-selected', selected ? 'true' : 'false');
+      });
+    }
+  }
+
+  function openPresetMenu() {
+    if (!ui.presetControl || !ui.presetTrigger) return;
+    ui.presetControl.classList.add('open');
+    ui.presetTrigger.setAttribute('aria-expanded', 'true');
+  }
+
+  function closePresetMenu() {
+    if (!ui.presetControl || !ui.presetTrigger) return;
+    ui.presetControl.classList.remove('open');
+    ui.presetTrigger.setAttribute('aria-expanded', 'false');
+  }
+
+  function togglePresetMenu() {
+    if (ui.presetControl?.classList.contains('open')) {
+      closePresetMenu();
+    } else {
+      openPresetMenu();
+    }
+  }
+
+  function applyPresetSelection(name) {
+    const currentPresets = loadPresets() || [];
+    const preset = currentPresets.find((p) => p.name === name);
+    if (!preset) return;
+    ui.systemPrompt.value = preset.prompt;
+    updatePresetDisplay(preset.name);
+    try { localStorage.setItem(storageKeys.lastPreset, preset.name); } catch { }
   }
 
   function initPersistence() {
@@ -573,36 +650,48 @@ EXAMPLES:
       const found = presets.find((p) => p.name === selectedName);
       if (found) {
         ui.systemPrompt.value = found.prompt;
-        if (ui.presetName) ui.presetName.value = found.name;
+        updatePresetDisplay(found.name);
       }
+    }
+
+    if (ui.presetTrigger) {
+      ui.presetTrigger.addEventListener('click', togglePresetMenu);
+    }
+    if (ui.presetControl) {
+      document.addEventListener('click', (event) => {
+        if (!ui.presetControl.contains(event.target)) closePresetMenu();
+      });
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') closePresetMenu();
+      });
     }
 
     if (ui.presetSelect) {
       ui.presetSelect.addEventListener('change', () => {
-        const name = ui.presetSelect.value;
-        const currentPresets = loadPresets() || [];
-        const p = currentPresets.find((x) => x.name === name);
-        if (p) {
-          ui.systemPrompt.value = p.prompt;
-          if (ui.presetName) ui.presetName.value = p.name;
-          try { localStorage.setItem(storageKeys.lastPreset, p.name); } catch { }
-        }
+        applyPresetSelection(ui.presetSelect.value);
       });
     }
 
     if (ui.btnSavePreset) {
       ui.btnSavePreset.addEventListener('click', () => {
-        const name = (ui.presetName?.value || '').trim();
+        const previousName = (ui.presetSelect?.value || ui.presetName?.value || '').trim();
+        const proposedName = window.prompt('Preset name', previousName || 'New preset');
+        if (proposedName === null) return;
+        const name = proposedName.trim();
         if (!name) { alert('Enter a preset name'); return; }
         const prompt = (ui.systemPrompt?.value || '').trim();
         const currentPresets = loadPresets() || [];
+        if (previousName && previousName !== name) {
+          const previousIdx = currentPresets.findIndex((p) => p.name === previousName);
+          if (previousIdx >= 0) currentPresets.splice(previousIdx, 1);
+        }
         const idx = currentPresets.findIndex((p) => p.name === name);
         const entry = { name, prompt };
         if (idx >= 0) currentPresets[idx] = entry; else currentPresets.push(entry);
         savePresets(currentPresets);
         renderPresetOptions(currentPresets, name);
         try { localStorage.setItem(storageKeys.lastPreset, name); } catch { }
-        if (ui.presetSelect) ui.presetSelect.value = name;
+        updatePresetDisplay(name);
       });
     }
 
@@ -614,7 +703,7 @@ EXAMPLES:
         const filtered = currentPresets.filter((p) => p.name !== name);
         savePresets(filtered);
         renderPresetOptions(filtered, '');
-        if (ui.presetName) ui.presetName.value = '';
+        updatePresetDisplay('');
         try {
           const last = localStorage.getItem(storageKeys.lastPreset);
           if (last === name) localStorage.removeItem(storageKeys.lastPreset);
@@ -937,8 +1026,79 @@ EXAMPLES:
     return { items, captionMap };
   }
 
+  function isFileDrag(event) {
+    return Array.from(event.dataTransfer?.types || []).includes('Files');
+  }
+
+  function setInputFiles(input, files) {
+    if (!input) return false;
+    try {
+      const transfer = new DataTransfer();
+      for (const file of files) transfer.items.add(file);
+      input.files = transfer.files;
+      return true;
+    } catch (error) {
+      console.warn('Could not assign dropped files to input', error);
+      return false;
+    }
+  }
+
+  function queueDroppedFiles(files) {
+    if (state.running || !ui.files) return;
+    const supportedFiles = files.filter((file) => isImage(file) || isVideo(file) || isText(file));
+    if (supportedFiles.length === 0) {
+      ui.progressText.textContent = 'No supported image, video, or .txt files found';
+      ui.progressText.className = 'error';
+      return;
+    }
+    if (!setInputFiles(ui.files, supportedFiles)) {
+      ui.progressText.textContent = 'This browser blocked drag-and-drop file loading';
+      ui.progressText.className = 'error';
+      return;
+    }
+    refreshItemsFromFiles();
+  }
+
+  function initFileDropZone() {
+    if (!ui.dropZone) return;
+
+    document.addEventListener('dragover', (event) => {
+      if (!isFileDrag(event)) return;
+      event.preventDefault();
+    });
+    document.addEventListener('drop', (event) => {
+      if (!isFileDrag(event)) return;
+      event.preventDefault();
+      ui.dropZone.classList.remove('is-dragging');
+    });
+
+    ui.dropZone.addEventListener('dragenter', (event) => {
+      if (!isFileDrag(event)) return;
+      event.preventDefault();
+      ui.dropZone.classList.add('is-dragging');
+    });
+    ui.dropZone.addEventListener('dragover', (event) => {
+      if (!isFileDrag(event)) return;
+      event.preventDefault();
+      ui.dropZone.classList.add('is-dragging');
+    });
+    ui.dropZone.addEventListener('dragleave', (event) => {
+      if (!ui.dropZone.contains(event.relatedTarget)) {
+        ui.dropZone.classList.remove('is-dragging');
+      }
+    });
+    ui.dropZone.addEventListener('drop', (event) => {
+      if (!isFileDrag(event)) return;
+      event.preventDefault();
+      event.stopPropagation();
+      ui.dropZone.classList.remove('is-dragging');
+      queueDroppedFiles(Array.from(event.dataTransfer?.files || []));
+    });
+  }
+
   ui.files?.addEventListener('change', () => { refreshItemsFromFiles(); });
   ui.outputFiles?.addEventListener('change', () => { refreshItemsFromFiles(); });
+  initFileDropZone();
 
   function getCardText(card) {
     if (!card) return '';
@@ -1101,8 +1261,16 @@ EXAMPLES:
     ui.progressText.textContent = `${done}/${total} (${percent}%)`;
   }
 
-  function isImage(file) { return file.type.startsWith('image/'); }
-  function isVideo(file) { return file.type.startsWith('video/'); }
+  function isImage(file) {
+    if (!file) return false;
+    if (file.type && file.type.startsWith('image/')) return true;
+    return /\.(avif|bmp|gif|jpe?g|png|webp)$/i.test(file.name || '');
+  }
+  function isVideo(file) {
+    if (!file) return false;
+    if (file.type && file.type.startsWith('video/')) return true;
+    return /\.(m4v|mkv|mov|mp4|mpeg|mpg|ogv|webm)$/i.test(file.name || '');
+  }
   function isText(file) {
     if (!file) return false;
     if (file.type && file.type.startsWith('text/')) return true;
