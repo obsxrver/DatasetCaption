@@ -11,7 +11,6 @@
     <meta name="language" content="English">
     <meta name="revisit-after" content="7 days">
 
-    <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://obsxrver.com/DatasetCaption/">
     <meta property="og:title" content="AI Caption Generator for LoRA Training | SDXL, Flux, Wan 2.2 | DatasetCaption">
@@ -19,34 +18,26 @@
     <meta property="og:image" content="https://obsxrver.com/DatasetCaption/static/pfp_xs.webp">
     <meta property="og:site_name" content="DatasetCaption">
 
-    <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://obsxrver.com/DatasetCaption/">
     <meta property="twitter:title" content="AI Caption Generator for LoRA Training | SDXL, Flux, Wan 2.2 | DatasetCaption">
     <meta property="twitter:description" content="Free tool that uses OpenRouter LLMs to generate detailed captions for photos and videos. Train better LoRA models for SDXL, Flux.2, Wan 2.2, Z-Image Turbo, and more. Batch processing with custom prompts.">
     <meta property="twitter:image" content="https://obsxrver.com/DatasetCaption/static/pfp_xs.webp">
 
-    <!-- Canonical URL -->
     <link rel="canonical" href="https://obsxrver.com/DatasetCaption/">
-
-    <!-- Favicon and icons -->
     <link rel="icon" href="static/favicon2.ico">
     <link rel="apple-touch-icon" href="static/pfp_xs.webp">
+    <link rel="stylesheet" href="static/styles.css?v=052626.1">
 
-    <!-- Stylesheet -->
-    <link rel="stylesheet" href="static/styles.css?v=041226.1">
-
-    <!-- Cache control -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
 
-    <!-- Structured Data -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "WebApplication",
-      "name": "DatasetCaption — AI Caption Generator for LoRA Training",
+      "name": "DatasetCaption - AI Caption Generator for LoRA Training",
       "description": "Free AI-powered caption generator that uses OpenRouter LLMs to write detailed captions for photos and videos. Create high-quality training data for LoRA fine-tuning of SDXL, Flux.2, Wan 2.2, Z-Image Turbo, and other open source image and video models.",
       "url": "https://obsxrver.com/DatasetCaption/",
       "applicationCategory": "MultimediaApplication",
@@ -62,142 +53,145 @@
       },
       "featureList": [
         "AI-powered image and video captioning via OpenRouter LLMs",
-        "LoRA training caption generation for SDXL, Flux.2, Wan 2.2, Z-Image Turbo",
         "Text-to-image and image-to-image captioning modes",
         "Batch processing with concurrent API requests",
         "Video frame extraction and captioning",
         "Custom system prompts and reusable prompt presets",
-        "Multiple AI model support (Google, OpenAI, Anthropic, Meta, Mistral, Qwen)",
         "Caption export as ZIP with paired text files",
-        "Image downscaling for cost-efficient API usage",
-        "OpenRouter OAuth sign-in or manual API key",
-        "Custom VLLM server support",
-        "Free and open source"
+        "Custom VLLM server support"
       ]
     }
     </script>
-    <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-GN301Z91TM"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-GN301Z91TM');
-</script>
- </head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-GN301Z91TM"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-GN301Z91TM');
+    </script>
+</head>
 <body>
-    <header>
-        <div class="header-left">
-            <h1>DatasetCaption</h1>
-            <div class="subtitle">AI-Powered LoRA Caption Generator</div>
+    <header class="app-header">
+        <a href="#workspace" class="brand-lockup" aria-label="DatasetCaption workspace">
+            <img src="static/pfp_xs.webp" alt="" class="brand-mark">
+            <span>
+                <strong>DatasetCaption</strong>
+                <span>LoRA caption studio</span>
+            </span>
+        </a>
+        <div class="header-center" aria-label="Workspace stats">
+            <span><b id="fileCount">0</b> files</span>
+            <span><b id="captionCount">0</b> captions</span>
+            <span id="modePill">Text-to-Image</span>
         </div>
-        <a href="https://obsxrver.com" target="_blank" rel="noreferrer noopener" class="profile-link">
+        <a href="https://obsxrver.com" target="_blank" rel="noreferrer noopener" class="profile-link" aria-label="Open obsxrver profile">
             <img src="static/pfp_xs.webp" alt="Obsxrver Profile Picture">
         </a>
     </header>
-    <main>
-        <section class="about">
-            <p>Generate high-quality captions for your LoRA training datasets using AI. DatasetCaption connects to <a href="https://openrouter.ai" target="_blank" rel="noreferrer noopener">OpenRouter</a> to have an LLM analyze and write detailed captions for your photos and videos — perfect for training LoRA models on state-of-the-art open source models like <strong>SDXL</strong>, <strong>Flux.2</strong>, <strong>Wan 2.2</strong>, and <strong>Z-Image Turbo</strong>. Supports text-to-image and image-to-image captioning modes, batch processing, video captioning, and fully customizable prompts.</p>
-        </section>
-        <section class="controls">
-            <div class="field">
-                <label>OpenRouter Account</label>
-                <div class="oauth-row">
-                    <button id="btnSignIn">Sign in with OpenRouter</button>
-                    <div style="display: flex; gap: 12px; align-items: center;">
-                        <span id="authStatus" class="badge">Signed out</span>
-                        <button id="btnSignOut" disabled>Sign out</button>
-                    </div>
-                </div>
-                <div class="hint">Sign in is recommended. Manual API key entry is still available below.</div>
-            </div>
-            <div class="field">
-                <label for="apiKey">OpenRouter API Key</label>
-                <input type="password" id="apiKey" placeholder="sk-or-v1-..." autocomplete="off">
-            </div>
-            <div class="field">
-                <label for="modelId">Model</label>
-                <div class="custom-select-wrapper">
-                    <div class="custom-select">
-                        <div class="custom-select-trigger">
-                            <span id="selectedModelName">Select a model...</span>
-                            <div class="arrow"></div>
-                        </div>
-                        <div class="custom-options">
-                            <div class="custom-options-header">
-                                <select id="providerFilter">
-                                    <option value="all" selected>All</option>
-                                    <option value="google">Google</option>
-                                    <option value="openai">OpenAI</option>
-                                    <option value="anthropic">Anthropic</option>
-                                    <option value="mistralai">Mistral</option>
-                                    <option value="meta-llama">Meta</option>
-                                    <option value="qwen">Qwen</option>
-                                </select>
-                                <select id="sortOrder">
-                                    <option value="alphabetical">A-Z</option>
-                                    <option value="chronological" selected>By Release</option>
-                                </select>
-                                <input type="text" id="modelSearch" placeholder="Search models...">
-                                <label class="model-filter-toggle">
-                                    <input type="checkbox" id="videoFilter">
-                                    <span>Native video only</span>
-                                </label>
-                            </div>
-                            <div id="modelOptions" class="model-options-list"></div>
-                        </div>
-                    </div>
-                </div>
-                <input type="hidden" id="modelId">
-            </div>
-            <div class="field reasoning-field">
-                <label for="reasoningEffort">Reasoning Effort</label>
-                <select id="reasoningEffort">
-                    <option value="xhigh">xhigh</option>
-                    <option value="high">high</option>
-                    <option value="medium" selected>medium</option>
-                    <option value="low">low</option>
-                    <option value="minimal">minimal</option>
-                    <option value="none">none</option>
-                </select>
-            </div>
-            <div class="field">
-                <label>Training Mode</label>
-                <div class="mode-switch">
-                    <label class="switch">
-                        <input type="checkbox" id="modeToggle">
-                        <span class="slider"></span>
-                    </label>
-                    <label for="modeToggle">
-                        <span id="modeLabel">Text-to-Image</span>
-                        <span class="mode-description" id="modeDescription">Generate captions describing images</span>
-                    </label>
-                </div>
-            </div>
-            <div class="field">
-                <label for="systemPrompt">System Prompt</label>
-                <textarea id="systemPrompt" rows="5" placeholder="Describe exactly how captions should be produced."></textarea>
-            </div>
-            <div class="field">
-                <label for="presetSelect">Prompt Presets</label>
-                <div class="preset-row">
-                    <select id="presetSelect"></select>
-                    <input type="text" id="presetName" placeholder="Preset name" autocomplete="off">
-                    <button id="btnSavePreset">Save Preset</button>
-                    <button id="btnDeletePreset">Delete</button>
-                </div>
-                <div class="hint">Selecting a preset fills the System Prompt. Saving stores it in your browser.</div>
-            </div>
-            <div class="field">
-                <label for="files">Upload Images/Videos</label>
-                <input type="file" id="files" accept="image/*,video/*,.txt,text/plain" multiple>
+
+    <main id="workspace" class="app-shell">
+        <section class="command-rail controls" aria-label="Caption setup">
+            <div class="rail-intro">
+                <span class="eyebrow">Setup</span>
+                <h1>Caption batches without babysitting them.</h1>
             </div>
 
-            <div class="field" id="outputFilesField" style="display: none;">
-                <label for="outputFiles">Upload Output Images (Image-to-Image Mode)</label>
-                <input type="file" id="outputFiles" accept="image/*" multiple>
-                <div class="hint">For image-to-image mode, upload output images that correspond to your input images. Files should have matching names.</div>
+            <div class="control-section auth-section">
+                <div class="section-heading">
+                    <span>Account</span>
+                    <span id="authStatus" class="badge">Signed out</span>
+                </div>
+                <div class="oauth-row">
+                    <button id="btnSignIn">Sign in with OpenRouter</button>
+                    <button id="btnSignOut" class="secondary-action" disabled>Sign out</button>
+                </div>
+                <div class="field">
+                    <label for="apiKey">OpenRouter API Key</label>
+                    <input type="password" id="apiKey" placeholder="sk-or-v1-..." autocomplete="off">
+                    <div class="hint">Stored locally in this browser tab.</div>
+                </div>
+            </div>
+
+            <div class="control-section">
+                <div class="section-heading">
+                    <span>Model</span>
+                    <span id="setupStatus">Ready</span>
+                </div>
+                <div class="field">
+                    <label for="modelId">Vision Model</label>
+                    <div class="custom-select-wrapper">
+                        <div class="custom-select">
+                            <div class="custom-select-trigger">
+                                <span id="selectedModelName">Select a model...</span>
+                                <div class="arrow"></div>
+                            </div>
+                            <div class="custom-options">
+                                <div class="custom-options-header">
+                                    <select id="providerFilter">
+                                        <option value="all" selected>All providers</option>
+                                        <option value="google">Google</option>
+                                        <option value="openai">OpenAI</option>
+                                        <option value="anthropic">Anthropic</option>
+                                        <option value="mistralai">Mistral</option>
+                                        <option value="meta-llama">Meta</option>
+                                        <option value="qwen">Qwen</option>
+                                    </select>
+                                    <select id="sortOrder">
+                                        <option value="alphabetical">A-Z</option>
+                                        <option value="chronological" selected>Newest</option>
+                                    </select>
+                                    <input type="text" id="modelSearch" placeholder="Search models...">
+                                    <label class="model-filter-toggle">
+                                        <input type="checkbox" id="videoFilter">
+                                        <span>Video only</span>
+                                    </label>
+                                </div>
+                                <div id="modelOptions" class="model-options-list"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <input type="hidden" id="modelId">
+                </div>
+                <div class="field compact-field reasoning-field">
+                    <label for="reasoningEffort">Reasoning Effort</label>
+                    <select id="reasoningEffort">
+                        <option value="xhigh">xhigh</option>
+                        <option value="high">high</option>
+                        <option value="medium" selected>medium</option>
+                        <option value="low">low</option>
+                        <option value="minimal">minimal</option>
+                        <option value="none">none</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="control-section">
+                <div class="field">
+                    <label>Training Mode</label>
+                    <div class="mode-switch">
+                        <label class="switch">
+                            <input type="checkbox" id="modeToggle">
+                            <span class="slider"></span>
+                        </label>
+                        <label for="modeToggle">
+                            <span id="modeLabel">Text-to-Image</span>
+                            <span class="mode-description" id="modeDescription">Generate captions describing images</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="systemPrompt">System Prompt</label>
+                    <textarea id="systemPrompt" rows="7" placeholder="Describe exactly how captions should be produced."></textarea>
+                </div>
+                <div class="field">
+                    <label for="presetSelect">Prompt Presets</label>
+                    <div class="preset-row">
+                        <select id="presetSelect"></select>
+                        <input type="text" id="presetName" placeholder="Preset name" autocomplete="off">
+                        <button id="btnSavePreset">Save</button>
+                        <button id="btnDeletePreset" class="secondary-action">Delete</button>
+                    </div>
+                </div>
             </div>
 
             <details class="advanced-section">
@@ -209,21 +203,21 @@
                             <input type="number" id="rps" min="1" max="100" value="20">
                         </div>
                         <div>
-                            <label for="concurrency">Max Concurrency</label>
+                            <label for="concurrency">Concurrency</label>
                             <input type="number" id="concurrency" min="1" max="60" value="20">
                         </div>
                         <div>
-                            <label for="downscaleMp">Downscale Target MP</label>
+                            <label for="downscaleMp">Target MP</label>
                             <input type="number" id="downscaleMp" min="0.2" max="2" step="0.1" value="1">
                         </div>
                     </div>
                     <div class="field grid-3">
                         <div>
-                            <label for="retryLimit">Retry Limit</label>
+                            <label for="retryLimit">Retries</label>
                             <input type="number" id="retryLimit" min="0" max="10" value="4">
                         </div>
                         <div>
-                            <label for="framesPerVideo">Frames per Video</label>
+                            <label for="framesPerVideo">Video Frames</label>
                             <input type="number" id="framesPerVideo" min="1" max="15" value="8">
                         </div>
                         <div>
@@ -237,7 +231,7 @@
                             <input type="number" id="topP" min="0" max="1" step="0.05" value="1">
                         </div>
                     </div>
-                    <div class="field">
+                    <div class="field inline-toggle">
                         <label class="switch">
                             <input type="checkbox" id="useCustomVllm">
                             <span class="slider"></span>
@@ -247,55 +241,77 @@
                     <div class="field" id="customVllmField" style="display: none;">
                         <label for="customVllmEndpoint">VLLM Server</label>
                         <input type="text" id="customVllmEndpoint" placeholder="192.168.1.100:8000 or example.com" autocomplete="off">
-                        <div class="hint">Enter your VLLM server (IP:port, domain, or full URL, e.g., 192.168.1.100:8000, example.com, or https://example.com)</div>
                     </div>
                     <div class="field" id="customVllmBearerTokenField" style="display: none;">
-                        <label for="customVllmBearerToken">Bearer Token (Optional)</label>
-                        <input type="password" id="customVllmBearerToken" placeholder="Bearer token for server authentication" autocomplete="off">
-                        <div class="hint">Enter bearer token if your VLLM server requires authentication</div>
+                        <label for="customVllmBearerToken">Bearer Token</label>
+                        <input type="password" id="customVllmBearerToken" placeholder="Optional bearer token" autocomplete="off">
                     </div>
                     <div class="field" id="customVllmBasicAuthField" style="display: none;">
-                        <label for="customVllmUsername">Username (Optional)</label>
-                        <input type="text" id="customVllmUsername" placeholder="Username for Basic Auth" autocomplete="off">
-                        <div class="hint">Enter username for Basic Authentication if required</div>
+                        <label for="customVllmUsername">Username</label>
+                        <input type="text" id="customVllmUsername" placeholder="Optional username" autocomplete="off">
                     </div>
                     <div class="field" id="customVllmPasswordField" style="display: none;">
-                        <label for="customVllmPassword">Password (Optional)</label>
-                        <input type="password" id="customVllmPassword" placeholder="Password for Basic Auth" autocomplete="off">
-                        <div class="hint">Enter password for Basic Authentication if required</div>
+                        <label for="customVllmPassword">Password</label>
+                        <input type="password" id="customVllmPassword" placeholder="Optional password" autocomplete="off">
                     </div>
                 </div>
             </details>
-
-            <div class="field" style="display:flex;align-items:center;gap:12px;">
-                <button id="btnSaveZip" disabled>Save Captions as ZIP</button>
-            </div>
-
-            <div class="buttons">
-                <button id="btnCaption">Caption</button>
-                <button id="btnCaptionUncaptioned">Caption Uncaptioned</button>
-                <button id="btnCancel" disabled>Cancel</button>
-                <button id="btnClear">Clear</button>
-                <button id="btnClearAllCaptions">Clear All Captions</button>
-            </div>
-            <div class="hint">Your API key is only used locally in this browser tab.</div>
         </section>
 
-        <section class="status">
-            <div id="progressText">Idle</div>
-            <progress id="progressBar" value="0" max="100"></progress>
-        </section>
+        <section class="caption-stage" aria-label="Dataset captioning workspace">
+            <div class="drop-zone">
+                <div class="drop-copy">
+                    <span class="eyebrow">Dataset</span>
+                    <h2>Load images, videos, and existing .txt captions.</h2>
+                    <p id="runMeta">No files selected</p>
+                </div>
+                <label class="file-picker" for="files">Choose Files</label>
+                <input type="file" id="files" accept="image/*,video/*,.txt,text/plain" multiple>
+            </div>
 
-        <section id="results" class="results"></section>
+            <div class="field output-files-field" id="outputFilesField" style="display: none;">
+                <label for="outputFiles">Matching Output Images</label>
+                <input type="file" id="outputFiles" accept="image/*" multiple>
+                <div class="hint">Use matching filenames for image-to-image transformation captions.</div>
+            </div>
+
+            <section class="status" aria-live="polite">
+                <div>
+                    <span class="eyebrow">Run</span>
+                    <div id="progressText">Idle</div>
+                </div>
+                <progress id="progressBar" value="0" max="100"></progress>
+                <div class="buttons">
+                    <button id="btnCaption">Caption</button>
+                    <button id="btnCaptionUncaptioned" class="secondary-action">Caption Empty</button>
+                    <button id="btnCancel" class="danger-action" disabled>Cancel</button>
+                    <button id="btnSaveZip" disabled>Save ZIP</button>
+                    <button id="btnClear" class="quiet-action">Clear</button>
+                    <button id="btnClearAllCaptions" class="quiet-action">Clear Captions</button>
+                </div>
+            </section>
+
+            <section id="results" class="results" aria-label="Caption results">
+                <div id="resultsEmpty" class="empty-state">
+                    <div class="empty-preview" aria-hidden="true">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                    <h2>Your caption queue will appear here.</h2>
+                    <p>No assets queued.</p>
+                </div>
+            </section>
+        </section>
     </main>
+
     <footer>
         <a href="https://openrouter.ai" target="_blank" rel="noreferrer noopener">Powered by OpenRouter</a>
-        <span class="separator">•</span>
+        <span class="separator">&bull;</span>
         <a href="https://github.com/obsxrver/wan-training-webui" target="_blank" rel="noreferrer noopener">WAN Training WebUI</a>
     </footer>
 
     <script src="src/3rd-party/jszip.min.js"></script>
-    <script src="src/script.min.js?v=041226.1"></script>
+    <script src="src/script.min.js?v=052626.1"></script>
 </body>
 </html>
-

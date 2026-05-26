@@ -80,6 +80,11 @@
     customVllmPasswordField: el('customVllmPasswordField'),
     vllmStatusIndicator: el('vllmStatusIndicator'),
     vllmStatusTooltip: el('vllmStatusTooltip'),
+    fileCount: el('fileCount'),
+    captionCount: el('captionCount'),
+    modePill: el('modePill'),
+    runMeta: el('runMeta'),
+    setupStatus: el('setupStatus'),
   };
 
   // Persistent storage keys
@@ -100,7 +105,56 @@
     reasoningEffort: 'sc_reasoning_effort',
   };
 
+  // Store of results for ZIP creation: Map<itemName, { caption: string, error: string|null }>
+  const resultsStore = new Map();
+
   const reasoningEffortValues = new Set(['xhigh', 'high', 'medium', 'low', 'minimal', 'none']);
+
+  function getSavableCaptionCount() {
+    let count = 0;
+    for (const [, value] of resultsStore.entries()) {
+      if (value && typeof value.caption === 'string' && value.caption.trim().length > 0) {
+        count += 1;
+      }
+    }
+    return count;
+  }
+
+  function updateWorkspaceStats() {
+    const itemCount = state.currentItems?.length || 0;
+    const captionCount = getSavableCaptionCount();
+    if (ui.fileCount) ui.fileCount.textContent = String(itemCount);
+    if (ui.captionCount) ui.captionCount.textContent = String(captionCount);
+    if (ui.runMeta) {
+      if (itemCount === 0) {
+        ui.runMeta.textContent = 'No files selected';
+      } else {
+        const images = state.currentItems.filter((item) => item.kind === 'image').length;
+        const pairs = state.currentItems.filter((item) => item.kind === 'image-pair').length;
+        const videos = state.currentItems.filter((item) => item.kind === 'video').length;
+        const parts = [];
+        if (images) parts.push(`${images} image${images === 1 ? '' : 's'}`);
+        if (pairs) parts.push(`${pairs} pair${pairs === 1 ? '' : 's'}`);
+        if (videos) parts.push(`${videos} video${videos === 1 ? '' : 's'}`);
+        ui.runMeta.textContent = `${itemCount} item${itemCount === 1 ? '' : 's'} queued${parts.length ? `: ${parts.join(', ')}` : ''}`;
+      }
+    }
+  }
+
+  function resetResultsView() {
+    if (!ui.results) return;
+    ui.results.innerHTML = `
+      <div id="resultsEmpty" class="empty-state">
+        <div class="empty-preview" aria-hidden="true">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+        <h2>Your caption queue will appear here.</h2>
+        <p>No assets queued.</p>
+      </div>`;
+    updateWorkspaceStats();
+  }
 
   // Presets helpers
   function defaultPresets() {
@@ -557,7 +611,6 @@ EXAMPLES:
 
   ui.btnClear.addEventListener('click', () => {
     if (state.running) return;
-    ui.results.innerHTML = '';
     ui.progressBar.value = 0;
     ui.progressText.textContent = 'Idle';
     ui.progressText.className = '';
@@ -570,6 +623,7 @@ EXAMPLES:
     state.currentItems = [];
     state.refreshSeq = 0;
     resultsStore.clear();
+    resetResultsView();
     updateSaveZipButton();
   });
 
@@ -735,8 +789,8 @@ EXAMPLES:
     if (inputFiles.length === 0) {
       if (seq !== state.refreshSeq) return;
       state.currentItems = [];
-      ui.results.innerHTML = '';
       resultsStore.clear();
+      resetResultsView();
       ui.progressBar.value = 0;
       ui.progressText.textContent = 'Idle';
       ui.progressText.className = '';
@@ -752,8 +806,8 @@ EXAMPLES:
       const { items, captionMap } = await buildItemsFromFiles(inputFiles, outputFiles);
       if (seq !== state.refreshSeq) return;
       state.currentItems = items;
-      ui.results.innerHTML = '';
       resultsStore.clear();
+      ui.results.innerHTML = '';
 
       for (const item of items) {
         const card = renderCard(item);
@@ -776,8 +830,8 @@ EXAMPLES:
     } catch (error) {
       if (seq !== state.refreshSeq) return;
       state.currentItems = [];
-      ui.results.innerHTML = '';
       resultsStore.clear();
+      resetResultsView();
       ui.progressText.textContent = 'Error preparing files: ' + (error?.message || 'Unknown error');
       ui.progressText.className = 'error';
     } finally {
@@ -1035,9 +1089,11 @@ EXAMPLES:
     if (state.isImageToImageMode) {
       ui.modeLabel.textContent = 'Image-to-Image';
       ui.modeDescription.textContent = 'Upload matching input and output images to generate transformation captions';
+      if (ui.modePill) ui.modePill.textContent = 'Image-to-Image';
     } else {
       ui.modeLabel.textContent = 'Text-to-Image';
       ui.modeDescription.textContent = 'Generate captions describing images';
+      if (ui.modePill) ui.modePill.textContent = 'Text-to-Image';
     }
   }
 
@@ -1269,7 +1325,9 @@ EXAMPLES:
     }
 
     // Clear current results when switching modes
-    ui.results.innerHTML = '';
+    state.currentItems = [];
+    resultsStore.clear();
+    resetResultsView();
     updateSaveZipButton();
 
     // Reload presets while preserving the current selection
@@ -1645,9 +1703,6 @@ EXAMPLES:
     }
   }
 
-  // Store of results for ZIP creation: Map<itemName, { caption: string, error: string|null }>
-  const resultsStore = new Map();
-
   function hasSavableCaptions() {
     for (const [, v] of resultsStore.entries()) {
       if (v && typeof v.caption === 'string' && v.caption.trim().length > 0) return true;
@@ -1657,6 +1712,7 @@ EXAMPLES:
 
   function updateSaveZipButton() {
     ui.btnSaveZip.disabled = !hasSavableCaptions();
+    updateWorkspaceStats();
   }
 
   ui.btnSaveZip.addEventListener('click', async () => {
@@ -2100,6 +2156,7 @@ Instructions: ${systemPrompt}`;
   // Model dropdown functionality
   async function fetchModels() {
     try {
+      if (ui.setupStatus) ui.setupStatus.textContent = 'Loading models';
       const seq = ++state.openRouterFetchSeq;
       const response = await fetch('https://openrouter.ai/api/v1/models');
       const data = await response.json();
@@ -2123,9 +2180,11 @@ Instructions: ${systemPrompt}`;
       // Local models will be added later if VLLM is enabled
       recomputeCombinedModels();
       ensurePreferredModelSelected();
+      if (ui.setupStatus) ui.setupStatus.textContent = `${state.openRouterModels.length} models`;
     } catch (error) {
       console.error('Failed to fetch models:', error);
       ui.progressText.textContent = 'Error: Could not load models';
+      if (ui.setupStatus) ui.setupStatus.textContent = 'Model load failed';
     }
   }
 
@@ -2212,6 +2271,9 @@ Instructions: ${systemPrompt}`;
     ui.modelId.value = model.id;
     if (ui.selectedModelName) {
       ui.selectedModelName.textContent = model.name || model.id;
+    }
+    if (ui.setupStatus) {
+      ui.setupStatus.textContent = model.isLocal ? 'Local model' : getModelProvider(model.id, model);
     }
 
     // Update selection highlighting
